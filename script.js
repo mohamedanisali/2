@@ -174,6 +174,13 @@ function handleFileSelect(file) {
     photoPreview.src = uploadedImageSrc;
     dropPlaceholder.classList.add('hidden');
     previewWrapper.classList.remove('hidden');
+    // Hide any photo error message
+    const photoError = document.getElementById('photoError');
+    if (photoError) photoError.classList.add('hidden');
+    // Make celebrate button fully visible/enabled
+    celebrateBtn.disabled = false;
+    celebrateBtn.style.opacity = '1';
+    celebrateBtn.style.pointerEvents = 'auto';
   };
   reader.readAsDataURL(file);
 }
@@ -241,6 +248,10 @@ celebrateBtn.addEventListener('click', () => {
     return;
   }
   nameError.classList.add('hidden');
+
+  // Hide photo error if shown
+  const photoError = document.getElementById('photoError');
+  if (photoError) photoError.classList.add('hidden');
 
   // If no photo, use a placeholder SVG
   const finalPhoto = uploadedImageSrc || generateAvatarSVG(name);
