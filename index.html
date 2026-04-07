@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Class of 2026 — Graduation Celebration</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- Google Fonts: Cormorant Garamond (display) + DM Sans (body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <!-- html2canvas for download feature -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════
+       LOADING SCREEN
+  ═══════════════════════════════════════════════ -->
+  <div id="loader">
+    <div class="loader-inner">
+      <div class="loader-cap">🎓</div>
+      <div class="loader-ring"></div>
+      <p class="loader-text">Preparing your celebration…</p>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       AUDIO TOGGLE
+  ═══════════════════════════════════════════════ -->
+  <button id="audio-toggle" aria-label="Toggle music" title="Toggle background music">
+    <span id="audio-icon">♪</span>
+  </button>
+  <!-- Royalty-free ambient piano loop via CDN -->
+  <audio id="bg-music" loop preload="none">
+    <source src="https://cdn.pixabay.com/audio/2023/10/09/audio_a4954bfd0a.mp3" type="audio/mpeg" />
+  </audio>
+
+  <!-- ═══════════════════════════════════════════════
+       HERO SECTION
+  ═══════════════════════════════════════════════ -->
+  <section id="hero">
+    <!-- Particle canvas -->
+    <canvas id="particles-canvas"></canvas>
+
+    <div class="hero-content">
+      <div class="hero-badge">✦ Class of 2026 ✦</div>
+      <h1 class="hero-title">
+        <span class="line-1">The Journey</span>
+        <span class="line-2">Was Always</span>
+        <span class="line-3">Worth It.</span>
+      </h1>
+      <p class="hero-sub">
+        Years of late nights, early mornings, moments of doubt and moments of brilliance —<br />
+        today, every sacrifice transforms into a memory you'll carry forever.
+      </p>
+      <button class="btn-primary" id="start-btn" onclick="scrollToInput()">
+        <span>Start Your Celebration</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+      <div class="hero-scroll-hint">Scroll down ↓</div>
+    </div>
+
+    <!-- Decorative orbs -->
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       INPUT SECTION
+  ═══════════════════════════════════════════════ -->
+  <section id="input-section">
+    <div class="section-header">
+      <span class="section-label">✦ Your Moment ✦</span>
+      <h2>Personalize Your Celebration</h2>
+      <p>Enter your name and upload your photo to create a memory you'll treasure forever.</p>
+    </div>
+
+    <div class="glass-card" id="input-card">
+
+      <!-- Name Input -->
+      <div class="field-group">
+        <label for="student-name">Your Full Name</label>
+        <div class="input-wrapper">
+          <input
+            type="text"
+            id="student-name"
+            placeholder="e.g. Mohamed Ali"
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <div class="input-glow"></div>
+        </div>
+        <!-- Dropdown suggestions -->
+        <ul id="name-suggestions" class="suggestions-list" role="listbox" aria-label="Name suggestions"></ul>
+        <span class="field-error" id="name-error">Please enter your name to continue.</span>
+      </div>
+
+      <!-- Image Upload -->
+      <div class="field-group">
+        <label>Your Photo</label>
+        <div class="upload-zone" id="upload-zone">
+          <input type="file" id="photo-input" accept="image/*" />
+          <div class="upload-placeholder" id="upload-placeholder">
+            <div class="upload-icon">📷</div>
+            <p><strong>Drag & drop</strong> your photo here</p>
+            <p class="upload-sub">or click to browse — JPG, PNG, WEBP</p>
+          </div>
+          <div class="upload-preview" id="upload-preview">
+            <img id="preview-img" src="" alt="Preview" />
+            <button class="remove-photo" id="remove-photo" aria-label="Remove photo">✕</button>
+          </div>
+        </div>
+        <span class="field-error" id="photo-error">Please upload your photo to continue.</span>
+      </div>
+
+      <!-- Submit -->
+      <button class="btn-celebrate" id="celebrate-btn" onclick="startCelebration()">
+        <span class="btn-text">🎓 Celebrate My Graduation</span>
+        <span class="btn-shine"></span>
+      </button>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       CELEBRATION SCREEN (hidden initially)
+  ═══════════════════════════════════════════════ -->
+  <section id="celebration-section" class="hidden">
+
+    <!-- Confetti container -->
+    <div id="confetti-container" aria-hidden="true"></div>
+
+    <!-- The card we'll capture for download -->
+    <div class="celebration-stage" id="celebration-card">
+
+      <!-- Glow backdrop -->
+      <div class="cel-glow" aria-hidden="true"></div>
+
+      <!-- Photo -->
+      <div class="cel-photo-wrap">
+        <div class="cel-photo-ring"></div>
+        <img id="cel-photo" src="" alt="Graduate photo" />
+      </div>
+
+      <!-- Text -->
+      <div class="cel-badge">Class of 2026</div>
+      <h2 class="cel-name" id="cel-name"></h2>
+      <div class="cel-divider">✦ ✦ ✦</div>
+      <p class="cel-message" id="cel-message"></p>
+      <div class="cel-footer">Congratulations, Graduate 🎓</div>
+
+    </div>
+
+    <!-- Action buttons (outside the capture zone) -->
+    <div class="celebration-actions">
+      <button class="btn-download" id="download-btn" onclick="downloadMemory()">
+        📸 Download My Memory
+      </button>
+      <button class="btn-reset" onclick="resetExperience()">
+        ↩ Celebrate Another
+      </button>
+    </div>
+
+  </section>
+
+  <!-- ═══════════════════════════════════════════════
+       FOOTER
+  ═══════════════════════════════════════════════ -->
+  <footer id="site-footer">
+    <p>Made with ❤️ for every graduate who made it.</p>
+    <p class="footer-sub">Class of 2026 — Your story is just beginning.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
