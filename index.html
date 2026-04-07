@@ -3,100 +3,110 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>دفعة 2026 — احتفالية التخرج</title>
+  <title>دفعة 2026 — احتفالية التخرج الملكية</title>
+  
   <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Tajawal:wght@200;300;400;500;700&display=swap" rel="stylesheet">
+  
   <link rel="stylesheet" href="style.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
 
   <div id="loader" class="loader">
-    <div class="loader__ring">
-      <div class="loader__cap"></div>
+    <div class="loader-inner">
+      <div class="loader-cap">🎓</div>
+      <div class="loader-ring"></div>
+      <p class="loader-text">جاري تحضير اللحظة الملكية...</p>
     </div>
-    <p class="loader__text">جاري تحضير اللحظة...</p>
   </div>
 
-  <button id="audio-toggle" class="music-btn" aria-label="Toggle Music">
+  <button id="audio-toggle" class="music-btn" aria-label="Toggle Music" title="تشغيل/إيقاف الموسيقى">
     <span id="audio-icon" class="music-icon">♪</span>
   </button>
-  <audio id="bg-music" loop><source src="https://cdn.pixabay.com/audio/2023/10/09/audio_a4954bfd0a.mp3" type="audio/mpeg"></audio>
+  <audio id="bg-music" loop preload="none">
+    <source src="https://cdn.pixabay.com/audio/2023/10/09/audio_a4954bfd0a.mp3" type="audio/mpeg" />
+  </audio>
 
-  <section class="hero">
+  <section id="hero" class="hero">
     <canvas id="particles-canvas" class="hero__canvas"></canvas>
+    
     <div class="hero__orb hero__orb--1"></div>
     <div class="hero__orb hero__orb--2"></div>
-    
+    <div class="hero__orb hero__orb--3"></div>
+
     <div class="hero__content">
-      <span class="hero__eyebrow">حصرياً لدفعة 2026</span>
+      <div class="hero__eyebrow">✦ حصرياً لدفعة 2026 ✦</div>
       <h1 class="hero__title">
-        <span class="hero__title-line">كانت رحلة</span>
-        <span class="hero__title-line hero__title-line--accent">تستحق العناء</span>
+        <span class="hero__title-line hero__title-line--1">كانت رحلة</span>
+        <span class="hero__title-line hero__title-line--2">تستحق العناء.</span>
       </h1>
       <p class="hero__subtitle">
-        سنوات من السهر، الطموح، ولحظات التفوق.. <br> اليوم نتوّج هذا التعب بذكرى تليق بك.
+        سنوات من السهر، الطموح، ولحظات التفوق وال brilliancy...<br />
+        اليوم نتوّج هذا التعب بذكرى تليق بك، ذكرى ستحملها للأبد.
       </p>
-      <button class="btn btn--primary" onclick="scrollToInput()">
-        <span>ابدأ الاحتفال</span>
+      <button class="btn btn--primary" id="start-btn" onclick="scrollToInput()">
+        <span>ابدأ احتفالك الملكي</span>
         <svg class="btn__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
       </button>
-    </div>
-    <div class="hero__scroll">
-      <span>اسحب للأسفل</span>
-      <div class="hero__scroll-line"></div>
+      <div class="hero__scroll-hint">اسحب للأسفل ↓</div>
     </div>
   </section>
 
   <section id="input-section" class="input-section">
     <div class="input-section__bg"></div>
     <div class="container">
-      <div class="glass-card input-card">
-        <div class="input-card__header">
-          <span class="input-card__step">01</span>
-          <h2 class="input-card__title">صمم <em>بطاقتك</em></h2>
-          <p class="input-card__desc">أدخل اسمك وارفع صورتك لنصنع لك ذكرى لا تُنسى.</p>
-        </div>
+      <div class="section-header">
+        <span class="section-label">✦ صمم ذكرى تليق بك ✦</span>
+        <h2 class="section-title">صمم بطاقتك الملكية</h2>
+        <p class="section-desc">أدخل اسمك وارفع صورتك لنصنع لك ذكرى لا تُنسى.</p>
+      </div>
 
+      <div class="glass-card input-card" id="input-card">
         <div class="form-group">
-          <label class="form-label">الاسم الكامل</label>
+          <label class="form-label" for="student-name">الاسم الكامل</label>
           <div class="input-wrapper">
-            <input type="text" id="student-name" class="form-input" placeholder="مثال: محمد علي" autocomplete="off">
+            <input type="text" id="student-name" class="form-input" placeholder="مثال: محمد علي" autocomplete="off" spellcheck="false" />
             <div class="input-glow"></div>
           </div>
-          <span id="name-error" class="form-error hidden">يرجى إدخال الاسم للمتابعة</span>
+          <ul id="name-suggestions" class="suggestions-list" role="listbox" aria-label="Name suggestions"></ul>
+          <span id="name-error" class="form-error hidden">يرجى إدخال اسمك للمتابعة.</span>
         </div>
 
         <div class="form-group">
           <label class="form-label">صورتك الشخصية</label>
           <div id="upload-zone" class="drop-zone">
-            <input type="file" id="photo-input" class="drop-zone__input" accept="image/*">
+            <input type="file" id="photo-input" class="drop-zone__input" accept="image/*" />
             <div id="upload-placeholder" class="drop-zone__placeholder">
               <div class="drop-zone__icon">📷</div>
-              <p class="drop-zone__label">اسحب الصورة هنا أو <span class="drop-zone__link">تصفح</span></p>
-              <p class="drop-zone__formats">JPG, PNG (Max 10MB)</p>
+              <p class="drop-zone__label">اسحب صورتك هنا أو <span class="drop-zone__link">تصفح</span></p>
+              <p class="drop-zone__formats">JPG, PNG, WEBP (Max 10MB)</p>
             </div>
             <div id="upload-preview" class="drop-zone__preview hidden">
-              <img id="preview-img" src="" alt="Preview" class="drop-zone__img">
+              <img id="preview-img" src="" alt="Preview" class="drop-zone__img" />
               <button id="remove-photo" class="drop-zone__remove">✕</button>
             </div>
           </div>
-          <span id="photo-error" class="form-error hidden">يرجى اختيار صورة</span>
+          <span id="photo-error" class="form-error hidden">يرجى رفع صورتك للمتابعة.</span>
         </div>
 
-        <button class="btn btn--primary btn--full" onclick="startCelebration()">
+        <button class="btn btn--primary btn--full" id="celebrate-btn" onclick="startCelebration()">
           <span class="btn__sparkle">✨</span>
-          <span>احتفل بتخرجي</span>
+          <span>احتفل بتخرجي الملكي</span>
+          <span class="btn__shine"></span>
         </button>
       </div>
     </div>
   </section>
 
   <section id="celebration-section" class="celebration hidden">
-    <div id="confetti-container" class="celebration__confetti"></div>
-    <div class="celebration__glow"></div>
+    <div id="confetti-container" class="celebration__confetti" aria-hidden="true"></div>
+    <div class="celebration__glow" aria-hidden="true"></div>
 
     <div id="celebration-card" class="glass-card celebration__card">
+      <div class="celebration__card-glow" aria-hidden="true"></div>
+      
       <div class="celebration__top">
         <div class="celebration__year">2026</div>
         <div class="celebration__divider">
@@ -109,7 +119,7 @@
       <div class="celebration__photo-wrap">
         <div class="celebration__photo-glow"></div>
         <div class="celebration__photo-ring"></div>
-        <img id="cel-photo" src="" alt="Graduate" class="celebration__photo">
+        <img id="cel-photo" src="" alt="Graduate photo" class="celebration__photo" />
         <div class="celebration__cap">🎓</div>
       </div>
 
@@ -121,16 +131,23 @@
         <span>Class of 2026</span>
         <span class="celebration__badge-dot">✦</span>
       </div>
+      
+      <div class="celebration__footer">تهانينا الحارة، أيها الخريج 🎓</div>
     </div>
 
     <div class="celebration__actions">
-      <button class="btn btn--secondary" onclick="downloadMemory()" id="download-btn">
+      <button class="btn btn--secondary" id="download-btn" onclick="downloadMemory()">
         <svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-        تحميل الذكرى
+        تحميل الذكرى الملكية
       </button>
-      <button class="btn btn--ghost" onclick="resetExperience()">العودة</button>
+      <button class="btn btn--ghost" onclick="resetExperience()">العودة للتصميم</button>
     </div>
   </section>
+
+  <footer id="site-footer" class="footer">
+    <p>صنع بحب ❤️ لكل خريج صنع المستحيل.</p>
+    <p class="footer-sub">دفعة 2026 — قصتك بدأت للتو.</p>
+  </footer >
 
   <script src="script.js"></script>
 </body>
